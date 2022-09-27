@@ -4,7 +4,8 @@ from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 from gtts import gTTS
-import wget
+import easygui as g
+
 
 
 def extract_text_from_pdf(pdf_path):
@@ -28,9 +29,20 @@ def extract_text_from_pdf(pdf_path):
     if text:
         return text
 
-
+fffop = ["*.pdf", "*.pdf"]
+str1 = g.fileopenbox(msg=None, title=None, filetypes=["*.pdf"], default='*.pdf')
+if str1 is None:
+    print('Ошибка')
 if __name__ == '__main__':
-    t = extract_text_from_pdf('C:/1C/test.pdf')
+    t = extract_text_from_pdf(str1)
+    print(t)
+
 
 s = gTTS(t, lang='ru')
-s.save('C:/1C/test.mp3')
+e = g.filesavebox(msg=None, title=None, filetypes=["*.mp3"], default='test.mp3')
+
+if e is None:
+    print('Ошибка')
+
+else:
+    s.save(e)
