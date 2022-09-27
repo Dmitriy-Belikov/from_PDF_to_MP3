@@ -4,17 +4,33 @@ from pdfminer.pdfinterp import PDFPageInterpreter
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 from gtts import gTTS
+import wget
 
-rm = PDFResourceManager()
-f = io.StringIO()
-con = TextConverter(rm, f)
-pinter = PDFPageInterpreter(rm, con)
 
-way = str(input(r'Укажите путь к файлу PDF и нажмите Enter '))
-with open(way, 'rb') as pp:
-    for page in PDFPage.get_pages(pp, caching=True, check_extractable=True):
-        pinter.process_page(page)
-    t = f.getvalue()
-print(t)
-s = gTTS(t, lang='en')
-s.save("C:\\test.mp3")
+def extract_text_from_pdf(pdf_path):
+    resource_manager = PDFResourceManager()
+    fake_file_handle = io.StringIO()
+    converter = TextConverter(resource_manager, fake_file_handle)
+    page_interpreter = PDFPageInterpreter(resource_manager, converter)
+
+    with open(pdf_path, 'rb') as fh:
+        for page in PDFPage.get_pages(fh,
+                                      caching=True,
+                                      check_extractable=True):
+            page_interpreter.process_page(page)
+
+        text = fake_file_handle.getvalue()
+
+    # close open handles
+    converter.close()
+    fake_file_handle.close()
+
+    if text:
+        return text
+
+
+if __name__ == '__main__':
+    t = extract_text_from_pdf('C:/1C/test.pdf')
+
+s = gTTS(t, lang='ru')
+s.save('C:/1C/test.mp3')
